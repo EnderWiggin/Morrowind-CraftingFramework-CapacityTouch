@@ -15,19 +15,24 @@ local touchModId = "touch:" .. touchID
 
 ------------------------------ helpers ------------------------------
 
--- sin ease in-out from x1 to ~x2.5 for skill <95, after that sqrt(x/100) (shifted up to match with end of previous curve) 
--- x1.5 at ~40 skill, x2 at ~60 skill, x3 at 220 skill
+-- sin ease in-out from x1 to ~x1.45 for skill <80, after that sqrt(x/100) (shifted up to match with end of previous curve) 
+-- x1.1 at ~30 skill, x1.25 at ~50 skill, x1.45 at ~80, x1.55 at 100 skill, x2 at ~208 skill
 local function enchantMultiplier()
     local skill = getModifiedSkill("enchant") or 0
-    if skill < 95 then
-        return 1.75 - 0.75 * (math.cos(math.pi * skill / 100.0));
+    if skill < 80 then
+        return 1.25 - 0.25 * (math.cos(math.pi * skill / 100.0));
     else
-        return 1.5165 + math.sqrt(skill / 100.0);
+        return 0.558 + math.sqrt(skill / 100.0);
     end
 end
 
+-- flat bonus to add after multiplying - skill/10, capped in [1, 15] range
+local function enchantBonus()
+    return math.max(1, math.min(15, (getModifiedSkill("enchant") or 0) / 10))
+end
+
 local function enchantMultiplierText()
-    return "x" .. math.floor(100 * enchantMultiplier()) / 100
+    return "x" .. math.floor(100 * enchantMultiplier()) / 100 .. " +" .. enchantBonus()
 end
 
 local function getSoulGemForRecipe(recipe)
@@ -142,7 +147,7 @@ registerStatsModifier {
             local qualityMult = ctx.touches.artisan and ctx.qualityMult or 1
             local enchantMult = enchantMultiplier()
 
-            m.enchantCapacity = capacity * qualityMult * enchantMult;
+            m.enchantCapacity = math.floor(0.5 + capacity * qualityMult * enchantMult + enchantBonus())
             ctx.modified = m;
         end
     end,
