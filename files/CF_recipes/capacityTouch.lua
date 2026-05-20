@@ -24,7 +24,7 @@ local function enchantMultiplier()
 end
 
 local function enchantMultiplierText()
-   return "x" .. math.floor(100*enchantMultiplier())/100
+    return "x" .. math.floor(100 * enchantMultiplier()) / 100
 end
 
 local function ingredientGem(recipe)
@@ -146,7 +146,7 @@ registerStatsModifier {
 }
 local supportedInfoTypes = { weapon = true, armor = true }
 
-registerTooltipModifier{
+registerTooltipModifier {
     id = touchModId,
     priority = 100,
     global = true,
@@ -155,7 +155,7 @@ registerTooltipModifier{
         if not (ctx.info and supportedInfoTypes[ctx.info.type]) then return end
         if recipe.preserveRecordId then return end
         if ctx.info.enchantment then return end
-        
+
         local row = {
             type = ui.TYPE.Flex,
             props = {
@@ -165,14 +165,14 @@ registerTooltipModifier{
                 relativePosition = v2(0.5, 0),
                 size = v2(0, S_FONT_SIZE)
             },
-            content = ui.content{
+            content = ui.content {
                 {
                     type = ui.TYPE.Image,
                     props = {
                         resource = getTexture("textures\\CraftingFramework\\menu_icon_magic.dds"),
                         size = v2(S_FONT_SIZE, S_FONT_SIZE),
                         relativePosition = v2(0, 0.5),
-                        anchor = v2(0,0.5),
+                        anchor = v2(0, 0.5),
                         alpha = 0.8,
                     },
                 },
@@ -181,9 +181,9 @@ registerTooltipModifier{
                     type = ui.TYPE.Text,
                     props = {
                         text = l10n("EnchantCapacity") .. " " .. enchantMultiplierText(),
-                        textSize = S_FONT_SIZE-2,
+                        textSize = S_FONT_SIZE - 2,
                         relativePosition = v2(0, 0.52),
-                        anchor = v2(0,0.5),
+                        anchor = v2(0, 0.5),
                         textColor = morrowindBlue3,
                         autoSize = true,
                     },
