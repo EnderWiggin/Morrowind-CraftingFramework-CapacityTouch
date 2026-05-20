@@ -26,9 +26,9 @@ local function enchantMultiplier()
     end
 end
 
--- flat bonus to add after multiplying - skill/10, capped in [1, 15] range
+-- flat bonus to add after multiplying - skill/10, capped at 15
 local function enchantBonus()
-    return math.max(1, math.min(15, (getModifiedSkill("enchant") or 0) / 10))
+    return math.min(15, (getModifiedSkill("enchant") or 0) / 10)
 end
 
 local function enchantMultiplierText()
