@@ -216,9 +216,9 @@ registerWindowBuilder {
         capacityButton = makeIconButton(
                 "textures/CraftingFramework/capacity.png",
                 v2(S_FONT_SIZE * 1, S_FONT_SIZE * 1),
-                function()
-                    toggleTouch(touchID)
-                end
+                function() toggleTouch(touchID) end,
+                nil,
+                touchModId
         )
         applyButtonState()
         ctx.topBarButtonFlex.content:add(capacityButton)
