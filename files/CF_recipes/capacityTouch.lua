@@ -1,9 +1,12 @@
 -- enchant capacity touch: increases enchant capacity of Weapons and Armor based on your Enchant skill. If Artisan's touch enabled - quality mult also affects enchant capacity, but soul gem cost doubles.
 
-if world then return end
-if not registerTouch then return end
+local isGlobal, _ = pcall(function() require('openmw.world') end)
+if isGlobal then return end
+if not registerTouch then return end -- Crafting Framework not detected, abort
 
+local core = require('openmw.core')
 local ui = require('openmw.ui')
+local util = require('openmw.util')
 local l10n = core.l10n('TPA_CF_CapacityTouch')
 local v2 = util.vector2
 
@@ -27,7 +30,7 @@ local function enchantMultiplierText()
     return "x" .. math.floor(100 * enchantMultiplier()) / 100
 end
 
-local function ingredientGem(recipe)
+local function getSoulGemForRecipe(recipe)
     local level = recipe.level or 0
     if level <= 19 then
         return "Misc_SoulGem_Petty"
@@ -42,8 +45,8 @@ local function ingredientGem(recipe)
     end
 end
 
-local function addIngredient(ctx, name, count)
-    name = string.lower(name)
+local function addIngredient(ctx, recipe, count)
+    local name = string.lower(getSoulGemForRecipe(recipe))
     local ingredients = ingredientsMutable(ctx)
     for _, i in ipairs(ingredients) do
         if i.id and string.lower(i.id) == name then
@@ -121,7 +124,7 @@ registerIngredientsModifier {
     func = function(recipe, ctx)
         if not (ctx.touches and ctx.touches[touchID]) then return end
         -- double the cost if artisan enabled
-        addIngredient(ctx, ingredientGem(recipe), ctx.touches.artisan and 2 or 1)
+        addIngredient(ctx, recipe, ctx.touches.artisan and 2 or 1)
     end,
 }
 

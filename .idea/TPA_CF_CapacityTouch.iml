@@ -7,6 +7,15 @@
       <excludeFolder url="file://$MODULE_DIR$/artifacts" />
     </content>
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/libs" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
