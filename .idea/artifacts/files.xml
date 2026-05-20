@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="files">
+    <output-path>$PROJECT_DIR$/artifacts/</output-path>
+    <root id="root">
+      <element id="archive" name="TPA_CF_CapacityTouch.zip">
+        <element id="directory" name="TPA_CF_CapacityTouch">
+          <element id="module-source" name="TPA_CF_CapacityTouch" />
+        </element>
+      </element>
+      <element id="directory" name="TPA_CF_CapacityTouch">
+        <element id="module-source" name="TPA_CF_CapacityTouch" />
+      </element>
+    </root>
+  </artifact>
+</component>

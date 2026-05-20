@@ -3,9 +3,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/files/CF_recipes" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/files/l10n" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/files/textures" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/files" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/artifacts" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
