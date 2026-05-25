@@ -12,43 +12,35 @@ local v2 = util.vector2
 
 local H = require('scripts.TPABOBAP.helpers')
 
-local touchID = "capacity"
+local touchID = "condition"
 local touchModId = "touch:" .. touchID
 
 ------------------------------ helpers ------------------------------
 
--- sin ease in-out from x1 to ~x1.45 for skill <80, after that sqrt(x/100) (shifted up to match with end of previous curve) 
--- x1.1 at ~30 skill, x1.25 at ~50 skill, x1.45 at ~80, x1.55 at 100 skill, x2 at ~208 skill
-local function enchantMultiplier()
-    local skill = getModifiedSkill("enchant") or 0
-    if skill < 80 then
-        return 1.25 - 0.25 * (math.cos(math.pi * skill / 100.0));
+-- x1 at 20, x1.5 at ~32, x2 at 50, x3 at 100, x4 at 170
+local function conditionMultiplier()
+    local skill = getModifiedSkill("armorer") or 0
+    if skill <= 20 then
+        return skill / 20
     else
-        return 0.558 + math.sqrt(skill / 100.0);
+        return math.sqrt((skill - 10) / 10)
     end
 end
 
--- flat bonus to add after multiplying - skill/10, capped at 15
-local function enchantBonus()
-    return math.min(15, (getModifiedSkill("enchant") or 0) / 10)
+local function conditionMultiplierText(quality)
+    return "x" .. math.floor((quality or 1) * 100 * conditionMultiplier()) / 100
 end
 
-local function enchantMultiplierText(quality)
-    return "x" .. math.floor((quality or 1) * 100 * enchantMultiplier()) / 100 .. " +" .. enchantBonus()
-end
-
-local function getSoulGemForRecipe(recipe)
+local function getToolForRecipe(recipe)
     local level = recipe.level or 0
-    if level <= 19 then
-        return "Misc_SoulGem_Petty"
-    elseif level <= 39 then
-        return "Misc_SoulGem_Lesser"
-    elseif level <= 59 then
-        return "Misc_SoulGem_Common"
-    elseif level <= 79 then
-        return "Misc_SoulGem_Greater"
+    if level < 25 then
+        return "repair_prongs"
+    elseif level < 50 then
+        return "hammer_repair"
+    elseif level < 75 then
+        return "repair_journeyman_01"
     else
-        return "Misc_SoulGem_Grand"
+        return "repair_master_01"
     end
 end
 
@@ -57,8 +49,8 @@ end
 
 registerTouch {
     id = touchID,
-    label = "Add Capacity",
-    priority = 10,
+    label = "Boost Condition",
+    priority = 11,
     gate = function(recipe)
         return (recipe.type == "Weapon" or recipe.type == "Armor") and not protectedRecordIds[recipe.id]
     end,
@@ -70,8 +62,11 @@ registerIngredientsModifier {
     priority = -1,
     func = function(recipe, ctx)
         if not (ctx.touches and ctx.touches[touchID]) then return end
-        -- double the cost if artisan enabled
-        H.addIngredient(ctx, getSoulGemForRecipe(recipe), "Miscellaneous",ctx.touches.artisan and 2 or 1)
+        local cost = util.round(3 * conditionMultiplier())
+        if ctx.touches.artisan then
+            cost = cost * 2
+        end
+        H.addIngredient(ctx, getToolForRecipe(recipe), "Repair", cost)
     end,
 }
 
@@ -83,13 +78,15 @@ registerStatsModifier {
         if not (ctx.touches and ctx.touches[touchID]) then return end
         if ctx.recordType == "Weapon" or ctx.recordType == "Armor" then
             local m = ctx.modified or {}
-            local capacity = m.enchantCapacity or ctx.base.enchantCapacity or ctx.record.enchantCapacity
-            if not capacity then return end
+            print("CF:", 'health', m.health, ctx.base.health, ctx.record.health)
+            
+            local condition = m.health or ctx.base.health or ctx.record.health
+            if not condition then return end
 
             local qualityMult = ctx.touches.artisan and ctx.qualityMult or 1
-            local enchantMult = enchantMultiplier()
+            local armorerMult = conditionMultiplier()
 
-            m.enchantCapacity = math.floor(0.5 + capacity * qualityMult * enchantMult + enchantBonus())
+            m.health = util.round(condition * armorerMult * qualityMult)
             ctx.modified = m;
         end
     end,
@@ -104,6 +101,7 @@ registerTooltipModifier {
         if not recipe or not (activeTouches and activeTouches[touchID]) then return end
         if not (ctx.info and supportedInfoTypes[ctx.info.type]) then return end
         if recipe.preserveRecordId then return end
+        
         local qualityMult = ctx.touches.artisan and ctx.qualityMult or 1
         local row = {
             type = ui.TYPE.Flex,
@@ -118,7 +116,7 @@ registerTooltipModifier {
                 {
                     type = ui.TYPE.Image,
                     props = {
-                        resource = getTexture("textures/CraftingFramework/capacity.png"),
+                        resource = getTexture("textures/CraftingFramework/condition.png"),
                         size = v2(S_FONT_SIZE, S_FONT_SIZE),
                         relativePosition = v2(0, 0.5),
                         anchor = v2(0, 0.5),
@@ -129,11 +127,11 @@ registerTooltipModifier {
                 {
                     type = ui.TYPE.Text,
                     props = {
-                        text = l10n("EnchantCapacity") .. enchantMultiplierText(qualityMult),
+                        text = l10n("ConditionBoost") .. " " .. conditionMultiplierText(qualityMult),
                         textSize = S_FONT_SIZE - 2,
                         relativePosition = v2(0, 0.52),
                         anchor = v2(0, 0.5),
-                        textColor = morrowindBlue3,
+                        textColor = morrowindGold,
                         autoSize = true,
                     },
                 },
@@ -145,16 +143,16 @@ registerTooltipModifier {
 
 ------------------------------ button ------------------------------
 
-local capacityButton
+local conditionButton
 
 local function applyButtonState()
-    if not capacityButton then return end
+    if not conditionButton then return end
     if activeTouches[touchID] then
-        capacityButton.content.background.props.color = morrowindGold
-        capacityButton.content.clickbox.userData.customColor = morrowindGold
+        conditionButton.content.background.props.color = morrowindGold
+        conditionButton.content.clickbox.userData.customColor = morrowindGold
     else
-        capacityButton.content.background.props.color = util.color.rgb(0, 0, 0)
-        capacityButton.content.clickbox.userData.customColor = nil
+        conditionButton.content.background.props.color = util.color.rgb(0, 0, 0)
+        conditionButton.content.clickbox.userData.customColor = nil
     end
 end
 
@@ -162,16 +160,16 @@ registerWindowBuilder {
     id = touchModId,
     priority = 10,
     func = function(ctx)
-        capacityButton = makeIconButton(
-                "textures/CraftingFramework/capacity.png",
+        conditionButton = makeIconButton(
+                "textures/CraftingFramework/condition.png",
                 v2(S_FONT_SIZE * 1, S_FONT_SIZE * 1),
                 function() toggleTouch(touchID) end,
                 nil,
                 touchModId
         )
         applyButtonState()
-        ctx.topBarButtonFlex.content:add(capacityButton)
-        addTooltip(capacityButton.content.clickbox, H.makeTextTooltip(l10n("CapacityButtonTipTitle") .. " " .. enchantMultiplierText(), l10n("CapacityButtonTipBody")))
+        ctx.topBarButtonFlex.content:add(conditionButton)
+        addTooltip(conditionButton.content.clickbox, H.makeTextTooltip(l10n("ConditionButtonTipTitle") .. " " .. conditionMultiplierText(), l10n("ConditionButtonTipBody")))
     end,
 }
 

@@ -1,0 +1,26 @@
+CapacityButtonTipTitle: Boost Enchant Capacity
+CapacityButtonTipBody: |-
+  Increases enchant capacity of Weapons 
+  and Armor based on your Enchant skill.
+  
+  Adds souls gem requirement with quality 
+  based on recipe level.
+  
+  If Artisan's Touch is enabled - quality 
+  also affects enchant capacity, but doubles 
+  soul gem cost.
+
+ConditionButtonTipTitle: Improve Condition
+ConditionButtonTipBody: |-
+  Increases maximum condition of Weapons
+  and Armor based on your Armorer skill.
+  
+  Adds repair tool requirement with quality 
+  based on recipe level.
+  
+  If Artisan's Touch is enabled - quality 
+  also affects maximum condition, but doubles 
+  repair tool cost.
+
+EnchantCapacity: "Enchant capacity: "
+ConditionBoost: "Condition multiplier: "
