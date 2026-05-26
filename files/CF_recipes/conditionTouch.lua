@@ -1,4 +1,7 @@
--- enchant capacity touch: increases enchant capacity of Weapons and Armor based on your Enchant skill. If Artisan's touch enabled - quality mult also affects enchant capacity, but soul gem cost doubles.
+--- Boost Durability: 
+--- Increases max durability of Weapons and Armor based on your Armorer skill.
+--- Adds repair tool requirement with quality  based on recipe level and amount based on boost provided.
+--- If Artisan's touch enabled - quality also affects durability, but repair tool cost doubles.
 
 local isGlobal, _ = pcall(function() require('openmw.world') end)
 if isGlobal then return end

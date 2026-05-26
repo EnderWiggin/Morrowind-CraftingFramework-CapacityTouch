@@ -1,4 +1,7 @@
--- enchant capacity touch: increases enchant capacity of Weapons and Armor based on your Enchant skill. If Artisan's touch enabled - quality mult also affects enchant capacity, but soul gem cost doubles.
+--- Boost Enchant Capacity
+--- Increases enchant capacity of Weapons and Armor based on your Enchant skill.
+--- Adds souls gem requirement with quality based on recipe level.
+---  If Artisan's Touch is enabled - quality also affects enchant capacity, but doubles soul gem cost.
 
 local isGlobal, _ = pcall(function() require('openmw.world') end)
 if isGlobal then return end

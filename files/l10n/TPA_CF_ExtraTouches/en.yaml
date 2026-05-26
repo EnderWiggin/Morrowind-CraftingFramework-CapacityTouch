@@ -10,13 +10,14 @@ CapacityButtonTipBody: |-
   also affects enchant capacity, but doubles 
   soul gem cost.
 
-ConditionButtonTipTitle: Improve Condition
+ConditionButtonTipTitle: Boost Durability
 ConditionButtonTipBody: |-
-  Increases maximum condition of Weapons
+  Increases maximum durability of Weapons
   and Armor based on your Armorer skill.
   
   Adds repair tool requirement with quality 
-  based on recipe level.
+  based on recipe level and amount based on 
+  boost provided.
   
   If Artisan's Touch is enabled - quality 
   also affects maximum condition, but doubles 
