@@ -63,7 +63,7 @@ registerTouch {
     label = "Add Capacity",
     priority = 10,
     gate = function(recipe)
-        return (recipe.type == "Weapon" or recipe.type == "Armor") and not protectedRecordIds[recipe.id]
+        return (recipe.type == "Weapon" or recipe.type == "Armor") and not recipe.preserveRecordId
     end,
 }
 

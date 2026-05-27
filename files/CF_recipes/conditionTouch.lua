@@ -55,7 +55,7 @@ registerTouch {
     label = "Boost Condition",
     priority = 11,
     gate = function(recipe)
-        return (recipe.type == "Weapon" or recipe.type == "Armor") and not protectedRecordIds[recipe.id]
+        return (recipe.type == "Weapon" or recipe.type == "Armor") and not recipe.preserveRecordId
     end,
 }
 
